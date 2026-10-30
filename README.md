@@ -139,8 +139,8 @@ GitHub Actions runs `ruff` and the full test suite on every push.
 
 | Version | What it was |
 |---------|-------------|
-| **v1** — [`notebooks/01_prototype_pandas_sqlite.ipynb`](notebooks/01_prototype_pandas_sqlite.ipynb) | One notebook: API → JSON → CSV → pandas cleaning → normalised SQLite database |
-| **v2** — this package | Medallion lakehouse with PySpark + Delta Lake, incremental loads, DQ quarantine, tests, CI, Airflow DAG |
+| **v1**: [`notebooks/01_prototype_pandas_sqlite.ipynb`](notebooks/01_prototype_pandas_sqlite.ipynb) | One notebook: API → JSON → CSV → pandas cleaning → normalised SQLite database |
+| **v2**: this package | Medallion lakehouse with PySpark + Delta Lake, incremental loads, DQ quarantine, tests, CI, Airflow DAG |
 
 Problems in v1 that v2 fixes:
 
@@ -164,11 +164,11 @@ Problems in v1 that v2 fixes:
 
 ## Data source
 
-[Open Food Facts](https://world.openfoodfacts.org/) — a free, collaborative database of food
+[Open Food Facts](https://world.openfoodfacts.org/) is a free, collaborative database of food
 products. Data is available under the
 [Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/1-0/).
 
 ## Author
 
-**Ali Elshafey** — M.Sc. Data Science student, FH Dortmund ·
+**Ali Elshafey**, M.Sc. Data Science student, FH Dortmund ·
 [LinkedIn](https://www.linkedin.com/in/ali-elshafey-5360641b9) · [GitHub](https://github.com/alels001)
