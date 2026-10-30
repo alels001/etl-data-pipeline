@@ -1,5 +1,12 @@
-pandas>=2.0
+# Pipeline (also declared in pyproject.toml; `pip install -e .` is the preferred setup)
+pyspark>=4.0,<4.1
+delta-spark>=4.0,<4.1
 requests>=2.28
-matplotlib>=3.7
-seaborn>=0.12
+
+# Development
+pytest>=8.0
+ruff>=0.5
+
+# Only needed for the v1 prototype notebook in notebooks/
+pandas>=2.0
 jupyter>=1.0

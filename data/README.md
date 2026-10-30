@@ -1,15 +1,23 @@
 # Data
 
-This folder is intentionally empty in the repository.
+Nothing in this folder is committed. Running the pipeline creates the lakehouse here
+(change the location with the `LAKEHOUSE_PATH` environment variable):
 
-When you run the notebook, the following files are created automatically:
+```
+data/lakehouse/
+├── landing/products/ingest_date=YYYY-MM-DD/*.jsonl   raw API pages, unchanged
+├── _checkpoints/bronze_products/                     streaming state (which files are ingested)
+├── bronze/products/                                  Delta, raw records + ingestion metadata
+├── silver/products/                                  Delta, one clean row per barcode
+├── silver/products_rejected/                         Delta, rows that failed data quality rules
+└── gold/                                             Delta, star schema + aggregates
+    ├── dim_brand/  dim_category/  dim_country/
+    ├── fact_product/  bridge_product_country/
+    └── agg_category_nutrition/  agg_country_summary/
+```
 
-| File | Description |
-|------|-------------|
-| `openfoodfacts_data.json` | Raw API response (~50,000 products) |
-| `valid_products_full.csv` | Filtered products with complete nutrition data |
-| `clean_products.csv` | Final cleaned dataset with engineered features |
-| `food_data.db` | Normalised SQLite database (5 tables) |
+The v1 prototype notebook writes its files (`openfoodfacts_data.json`, CSVs, `food_data.db`)
+next to the notebook.
 
-All data comes from the [Open Food Facts API](https://world.openfoodfacts.org/)
-and is licensed under [ODbL](https://opendatacommons.org/licenses/odbl/1-0/).
+All data comes from [Open Food Facts](https://world.openfoodfacts.org/) and is licensed under the
+[Open Database License (ODbL)](https://opendatacommons.org/licenses/odbl/1-0/).

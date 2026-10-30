@@ -2,6 +2,12 @@
 *.json
 *.csv
 *.db
+data/lakehouse/
+
+# Spark
+spark-warehouse/
+metastore_db/
+derby.log
 
 # Python
 __pycache__/
@@ -9,6 +15,8 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
+.pytest_cache/
+.ruff_cache/
 
 # Jupyter
 .ipynb_checkpoints/
