@@ -9,7 +9,7 @@ test:
 lint:
 	ruff check .
 
-# Full run: download 20 API pages (~2,000 products, about 2 minutes) and build all layers
+# Full run: download 10 API pages (~1,000 products, about 1.5 minutes) and build all layers
 run:
 	python -m off_pipeline
 

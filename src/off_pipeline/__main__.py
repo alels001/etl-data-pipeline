@@ -1,6 +1,6 @@
 """Command line entry point.
 
-    python -m off_pipeline                          # all steps, 20 API pages
+    python -m off_pipeline                          # all steps, 10 API pages
     python -m off_pipeline --steps silver gold      # rebuild from Bronze, no API calls
     python -m off_pipeline --max-pages 5
 """
@@ -24,7 +24,7 @@ def main() -> None:
     parser.add_argument(
         "--max-pages",
         type=int,
-        default=20,
+        default=10,
         help="API pages to download (100 products each, ~6.5 s per page)",
     )
     args = parser.parse_args()

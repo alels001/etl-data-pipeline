@@ -21,7 +21,7 @@ with DAG(
     default_args={"retries": 2, "retry_delay": timedelta(minutes=5)},
     tags=["open-food-facts", "lakehouse"],
 ) as dag:
-    extract = BashOperator(task_id="extract", bash_command=f"{CLI} extract --max-pages 20")
+    extract = BashOperator(task_id="extract", bash_command=f"{CLI} extract --max-pages 10")
     bronze = BashOperator(task_id="bronze", bash_command=f"{CLI} bronze")
     silver = BashOperator(task_id="silver", bash_command=f"{CLI} silver")
     gold = BashOperator(task_id="gold", bash_command=f"{CLI} gold")

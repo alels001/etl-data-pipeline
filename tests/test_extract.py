@@ -1,12 +1,14 @@
 import json
 
+from off_pipeline import extract
 from off_pipeline.config import ApiConfig
 from off_pipeline.extract import fetch_page, write_page
 
 
 class FakeResponse:
-    def __init__(self, payload):
+    def __init__(self, payload, status_code=200):
         self.payload = payload
+        self.status_code = status_code
 
     def raise_for_status(self):
         pass
@@ -49,6 +51,25 @@ def test_write_page_writes_json_lines(tmp_path):
     assert path.name == "run1_page_0007.jsonl"
     lines = path.read_text(encoding="utf-8").splitlines()
     assert [json.loads(line) for line in lines] == products
+
+
+class PagedSession:
+    """Returns 100 products for pages 1-2 and 401 from page 3 on."""
+
+    def get(self, url, params, timeout):
+        if params["page"] >= 3:
+            return FakeResponse({}, status_code=401)
+        return FakeResponse({"products": [{"code": str(i)} for i in range(100)]})
+
+
+def test_extract_stops_at_page_limit_and_keeps_pages(tmp_path, monkeypatch):
+    monkeypatch.setattr(extract, "build_session", lambda cfg: PagedSession())
+    monkeypatch.setattr(extract.time, "sleep", lambda seconds: None)
+
+    written = extract.run_extract(str(tmp_path / "landing"), max_pages=5)
+
+    assert len(written) == 2
+    assert all(path.exists() for path in written)
 
 
 def test_user_agent_identifies_the_app():

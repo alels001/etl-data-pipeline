@@ -34,6 +34,10 @@ def build_session(cfg: ApiConfig) -> requests.Session:
     return session
 
 
+class PageLimitReached(Exception):
+    """The API refused a deeper page."""
+
+
 def fetch_page(session: requests.Session, cfg: ApiConfig, page: int) -> list[dict]:
     params = {
         "fields": ",".join(cfg.fields),
@@ -42,6 +46,10 @@ def fetch_page(session: requests.Session, cfg: ApiConfig, page: int) -> list[dic
         "page": page,
     }
     response = session.get(cfg.base_url, params=params, timeout=cfg.timeout_seconds)
+    # Observed in practice (not documented): anonymous search requests get
+    # 401 Unauthorized after page 10, i.e. after the first 1,000 results.
+    if response.status_code == 401 and page > 1:
+        raise PageLimitReached(f"API returned 401 for page {page}")
     response.raise_for_status()
     return response.json().get("products", [])
 
@@ -66,7 +74,12 @@ def run_extract(landing_path: str, max_pages: int, cfg: ApiConfig | None = None)
     session = build_session(cfg)
     written = []
     for page in range(1, max_pages + 1):
-        products = fetch_page(session, cfg, page)
+        try:
+            products = fetch_page(session, cfg, page)
+        except PageLimitReached as err:
+            # Keep the pages we already have; the rest of the pipeline still runs
+            log.warning("%s - stopping extract after %d pages.", err, page - 1)
+            break
         if not products:
             log.info("Page %d is empty, stopping.", page)
             break

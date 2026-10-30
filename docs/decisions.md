@@ -42,8 +42,17 @@ Open Food Facts limits search requests to 10/minute per IP and can block IPs tha
 The extractor waits 6.5 s between pages and uses `urllib3.Retry` with exponential backoff for
 `429` and `5xx` responses. A timeout prevents a hanging request from blocking the job forever.
 
+Found during the first real run (not in the API docs): anonymous search requests get
+`401 Unauthorized` from page 11 on, i.e. only the first 1,000 results are available. v2.0 then
+crashed and lost the run, although 10 pages were already saved. Now the extractor treats a `401`
+on a later page as "end of available data": it logs a warning, stops, and the pipeline continues
+with the pages it has. The default is 10 pages. Other HTTP errors still fail the job.
+
+Because the results are sorted by popularity, each daily run fetches the current top 1,000
+products; Silver's MERGE adds new barcodes and updates changed ones.
+
 For loading the full catalogue (millions of products) the API is the wrong tool: Open Food Facts
-asks to use the bulk export instead. The API is fine for the few thousand most popular products.
+asks to use the bulk export instead.
 
 ## 5. Incremental Bronze with Structured Streaming (`availableNow`)
 

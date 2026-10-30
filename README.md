@@ -38,7 +38,8 @@ flowchart LR
 
 - **Respects the API limits.** The search endpoint allows 10 requests/minute per IP. The extractor
   waits 6.5 s between pages, retries with exponential backoff on `429`/`5xx`, and sends a
-  `User-Agent` with a contact address as Open Food Facts asks.
+  `User-Agent` with a contact address as Open Food Facts asks. Anonymous searches are refused
+  (`401`) after the first 1,000 results; the extractor then stops and keeps the pages it has.
 - **Incremental and idempotent.** Bronze uses Structured Streaming with `trigger(availableNow=True)`:
   the checkpoint tracks which landing files were ingested, so each run processes only new files.
   Silver uses a Delta `MERGE` on the barcode and only replaces a row with a newer version.
@@ -91,7 +92,7 @@ pip install -e ".[dev]"
 export OFF_CONTACT_EMAIL="you@example.com"   # sent in the API User-Agent
 
 make test      # unit tests + end-to-end Delta test on fixture data (no API calls)
-make run       # download 20 pages (~2,000 products, ~2 min) and build all layers
+make run       # download 10 pages (~1,000 products, ~1.5 min) and build all layers
 make rebuild   # rebuild Silver and Gold from Bronze, no API calls
 ```
 
